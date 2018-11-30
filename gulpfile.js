@@ -37,21 +37,24 @@ function buildModel() {
   var vocabulary = fs.readFileSync('model/vocab.json');
   var embeddings = fs.readFileSync('model/embeddings.json.lz');
   var codewords = fs.readFileSync('model/codewords.json.lz');
-  return gulp.src('src/model.tmpl.js')
+  return gulp.src('src/model.tmpl.json')
   .pipe(template({
     vocabulary: vocabulary,
     embeddings: embeddings.toString(),
     codewords: codewords.toString() 
   }))
-  .pipe(rename('model.js'))
-  .pipe(gulp.dest('src'));
+  .pipe(rename('model.json'))
+  .pipe(gulp.dest('dist'));
 }
 
 function bundle() {
   return gulp.src('src/embeddings.js')
     .pipe(webpack({
+      entry: {
+        embeddings: './src/embeddings.js',
+      },
       output: {
-        filename: 'embeddings.js',
+        filename: '[name].bundle.js',
         library: 'embeddings'
       }
     }))

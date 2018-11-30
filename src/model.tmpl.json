@@ -1,0 +1,5 @@
+{
+	"vocabulary": <%= vocabulary %>,
+	"codewords": "<%= codewords %>",
+	"embeddings": "<%= embeddings %>"
+}
