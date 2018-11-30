@@ -1,0 +1,8 @@
+venv/
+data/
+dist/
+model/
+node_modules/
+.idea/
+.DS_Store
+src/model.js
