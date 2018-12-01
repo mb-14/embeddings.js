@@ -13,6 +13,7 @@ class WordEmbeddings {
 		this.embeddingsMap = embeddingsMap;
 	}
 
+	// _getVector returns the vector representation of a word as an NDArray
 	_getVector(word) {
 		var embedding = this.embeddingsMap[word];
 		var vector = this.codewords.pick(0, embedding.get(0));
@@ -23,10 +24,12 @@ class WordEmbeddings {
 		return vector;
 	}
 
+	// _getVector returns the vector representation of a word as a float array
 	getVector(word) {
 		return this._getVector(word).tolist();
 	}
 
+	// getCosineDistance returns the cosine distance between two word vectors
 	getCosineDistance(word1, word2) {
 		var vec1 = this._getVector(word1);
 		var vec2 = this._getVector(word2);
@@ -37,24 +40,16 @@ class WordEmbeddings {
 		return cosineDistance;
 	}
 
-	getNearestNeighbors(word, count=5) {
+	// getNearestNeighbors returns the closest k word vectors from a given word vector 
+	getNearestNeighbors(word, k=5) {
 		var neighbors = [];
 		var embedding = this.embeddingsMap[word];
-		var subdims = this.codewords.shape[0];
-		var centers = this.codewords.shape[1];
-		var abs = 0;
-		var stacks = [];
-		for (var i = 0; i < subdims; i++) {
-			var codeword = this.codewords.pick(i, embedding.get(i));
-			abs += np.dot(codeword, codeword).get(0);
-			var centers = this.codewords.pick(i);
-			var dotProducts = np.dot(codeword, centers.T);
-			var squareSums = np.dot(centers, centers.T).diag();
-			var stacked = np.stack([dotProducts, squareSums], -1);
-			stacks.push(stacked);
-		}
-		abs = Math.sqrt(abs);
-		var lookupTable = np.stack(stacks);
+		var vector = this._getVector(word);
+		var abs = Math.sqrt(np.dot(vector, vector).get(0));
+
+		// Precompute distances
+		var lookupTable = this._computeDistances(embedding);
+	
 		for(var i = 0; i < this.vocabulary.length; i++) {
 			var word1 = this.vocabulary[i];
 
@@ -65,19 +60,20 @@ class WordEmbeddings {
 			var embedding1 = this.embeddingsMap[word1];
 			var dotProduct = 0;
 			var abs1 = 0;
-			for (var j = 0; j < subdims; j++) {
+			for (var j = 0; j < this.codewords.shape[0]; j++) {
 				var center = embedding1.get(j);
 				dotProduct += lookupTable.get(j, center, 0);
 				abs1 += lookupTable.get(j, center, 1);
 			}
 
-			var nn = {
+			var neighbor = {
 				distance: dotProduct/(abs*Math.sqrt(abs1)),
 				word: word1,
-				index: i
 			};
-			neighbors.push(nn);
+
+			neighbors.push(neighbor);
 		}
+
 		neighbors.sort(function(a, b) {
 			if (a.distance < b.distance) {
 				return 1;
@@ -87,7 +83,25 @@ class WordEmbeddings {
 			}
 			return 0
 		})
-		return neighbors.slice(0, count);
+		return neighbors.slice(0, k);
+	}
+
+	// _computeDistances computes the partial dot products and l2 distances of an embedding
+	// from all the centres
+	_computeDistances(embedding) {
+		var subdims = this.codewords.shape[0];
+		var nCenters = this.codewords.shape[1];
+		var distances = [];
+		for (var i = 0; i < subdims; i++) {
+			var codeword = this.codewords.pick(i, embedding.get(i));
+			var centers = this.codewords.pick(i);
+			var dotProducts = np.dot(codeword, centers.T);
+			var squareSums = np.dot(centers, centers.T).diag();
+			var stacked = np.stack([dotProducts, squareSums], -1);
+			distances.push(stacked);
+		}
+
+		return np.stack(distances);
 	}
 }
 
