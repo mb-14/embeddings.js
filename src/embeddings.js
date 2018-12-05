@@ -41,7 +41,7 @@ class WordEmbeddings {
 	}
 
 	// getNearestNeighbors returns the closest k word vectors from a given word vector 
-	getNearestNeighbors(word, k=5) {
+	async getNearestNeighbors(word, k=5) {
 		var neighbors = [];
 		var embedding = this.embeddingsMap[word];
 		var vector = this._getVector(word);

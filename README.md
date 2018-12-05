@@ -31,7 +31,7 @@ Accuracy: 87.078803%
 ``` 
 
 ### Compressing embeddings
-Add `-c` parameter to compress the embeddings and re-calculate the accuracy. The compressed embeddings, codebook of centroids and vocabulary as saved in the model directory as JSON files.
+Add the `-c` parameter to compress the embeddings and re-calculate the accuracy. The compressed embeddings, codebook of centroids and vocabulary are saved in the model directory as JSON files.
 
 ```console
 foo@bar:~$ python main.py -c -i data/crawl-300d-50K.vec
