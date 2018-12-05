@@ -17,13 +17,17 @@
 			if (loaded === false) {
 				return;
 			}
-			var word = document.getElementById("word-input").value;
-			var neighbors = wordEmbeddings.getNearestNeighbors(word);
 			var results = document.getElementById("results");
-			results.innerHTML = "";
-			for (var i = 0; i< neighbors.length; i++) {
-				results.innerHTML  += neighbors[i] + "\n";
-			}
+			var word = document.getElementById("word-input").value;
+			results.innerHTML = "Loading...";
+			wordEmbeddings.getNearestNeighbors(word).then(neighbors => {
+				results.innerHTML = "";
+				for (var i = 0; i< neighbors.length; i++) {
+					results.innerHTML  += neighbors[i].word + "<br/>";
+				}
+			});
+			
+			
 		});
 
 	</script>
