@@ -1,6 +1,5 @@
 venv/
 data/
-dist/
 model/
 node_modules/
 .idea/
