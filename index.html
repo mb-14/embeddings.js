@@ -1,34 +1,15 @@
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="dist/embeddings.bundle.js" charset="utf-8"></script>
+	<script src="index.js" charset="utf-8"></script>
+	<script src="worker.js" charset="utf-8"></script>
 </head>
 <body>
 	<input type="text" id="word-input">
 	<button type="button" id="nearest-neighbors">Find nearest neighbors</button>
 	<div id="results"></div>
 	<script type="text/javascript">
-		var wordEmbeddings;
-		var loaded = false;
-		embeddings.loadModel("dist/model.json").then(w => {
-			loaded = true;
-			wordEmbeddings = w;
-		});
-		document.getElementById("nearest-neighbors").addEventListener("click", () =>{
-			if (loaded === false) {
-				return;
-			}
-			var results = document.getElementById("results");
-			var word = document.getElementById("word-input").value;
-			results.innerHTML = "Loading...";
-			wordEmbeddings.getNearestNeighbors(word).then(neighbors => {
-				results.innerHTML = "";
-				for (var i = 0; i< neighbors.length; i++) {
-					results.innerHTML  += neighbors[i].word + "<br/>";
-				}
-			});
-			
-			
-		});
 
 	</script>
 </body>
