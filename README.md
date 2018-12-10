@@ -8,7 +8,7 @@ we will compress pre-trained word vectors using simple post-processing technique
 The resulting embeddings are significantly smaller compared to the original embeddings with no considerable drop in accuracy. The final vectors along with the helper methods to access them are bundled into a javascript library.
 
 ## Demo
-You can check out the demo of the js library on this page: https://mb-14.github.io/embeddings.js/
+You can check out the demo of the js library on this page: https://mb-14.github.io/embeddings.js/demo
 
 ## Instructions
 
