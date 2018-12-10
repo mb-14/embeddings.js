@@ -2,6 +2,7 @@ venv/
 data/
 model/
 node_modules/
+dist/
 .idea/
 .DS_Store
 src/model.js

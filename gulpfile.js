@@ -23,7 +23,7 @@ lzCompress = function() {
 
 
 function clean() {
-  return del(['dist', 'src/model.js', 'model/embeddings.json.lz', 'model/codewords.json.lz']);
+  return del(['dist', 'demo/assets', 'src/model.js', 'model/embeddings.json.lz', 'model/codewords.json.lz']);
 }
 
 function compress() {
@@ -44,7 +44,8 @@ function buildModel() {
     codewords: codewords.toString() 
   }))
   .pipe(rename('model.json'))
-  .pipe(gulp.dest('dist'));
+  .pipe(gulp.dest('dist'))
+  .pipe(gulp.dest('demo/assets'));
 }
 
 function bundle() {
@@ -54,11 +55,12 @@ function bundle() {
         embeddings: './src/embeddings.js',
       },
       output: {
-        filename: '[name].bundle.js',
+        filename: '[name].js',
         library: 'embeddings'
       }
     }))
-    .pipe(gulp.dest('dist/'));
+    .pipe(gulp.dest('dist/'))
+    .pipe(gulp.dest('demo/assets/'));
 }
 
 gulp.task('compress', compress);
