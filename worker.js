@@ -6,7 +6,7 @@ self.addEventListener('message', input => {
 	var result = {
 		type: event.type,
 		data: {}
-	}
+	};
 	switch(event.type) {
 		case 'load_model':
 			embeddings.loadModel("dist/model.json").then(w => {
