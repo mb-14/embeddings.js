@@ -23,11 +23,11 @@ lzCompress = function() {
 
 
 function clean() {
-  return del(['dist', 'demo/assets', 'src/model.js', 'model/embeddings.json.lz', 'model/codewords.json.lz']);
+  return del(['dist', 'demo/assets', 'src/model.js', 'model/codes.json.lz', 'model/centroids.json.lz']);
 }
 
 function compress() {
-  return gulp.src(['model/codewords.json', 'model/embeddings.json'])
+  return gulp.src(['model/codes.json', 'model/centroids.json'])
   .pipe(lzCompress())
   .pipe(gulp.dest('model'));
 }
@@ -35,13 +35,13 @@ function compress() {
 
 function buildModel() {
   var vocabulary = fs.readFileSync('model/vocab.json');
-  var embeddings = fs.readFileSync('model/embeddings.json.lz');
-  var codewords = fs.readFileSync('model/codewords.json.lz');
+  var codes = fs.readFileSync('model/codes.json.lz');
+  var centroids = fs.readFileSync('model/centroids.json.lz');
   return gulp.src('src/model.tmpl.json')
   .pipe(template({
     vocabulary: vocabulary,
-    embeddings: embeddings.toString(),
-    codewords: codewords.toString() 
+    codes: codes.toString(),
+    centroids: centroids.toString() 
   }))
   .pipe(rename('model.json'))
   .pipe(gulp.dest('dist'))
@@ -51,6 +51,7 @@ function buildModel() {
 function bundle() {
   return gulp.src('src/embeddings.js')
     .pipe(webpack({
+      mode: 'development',
       entry: {
         embeddings: './src/embeddings.js',
       },
