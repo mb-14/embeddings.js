@@ -39,10 +39,14 @@ class WordEmbeddings {
 		return cosineDistance.dataSync()[0];
 	}
 
-	// getNearestNeighbors returns the closest k word vectors from a given word vector 
+	// getNearestNeighbors returns the closest k words from a given word 
 	getNearestNeighbors(word, k=5) {
-		var neighbors = tf.tensor1d([]);
 		var vector = this._getVector(word);
+		return this._getNearestNeighbors(vector, k);
+	}
+
+	_getNearestNeighbors(vector, k) {
+		var neighbors = tf.tensor1d([]);
 		var abs = vector.norm(2).asScalar();
 		// Precompute distances
 		console.time("precompute_distances");
@@ -76,6 +80,18 @@ class WordEmbeddings {
 			});
 		}
 		return nearestNeighbors;
+
+	}
+
+	wordAnalogy(word1, word2, word3, k=5) {
+		var vector1 = this._getVector(word1);
+		var vector2 = this._getVector(word2);
+		var vector3 = this._getVector(word3);
+		vector1 = vector1.div(vector1.norm());
+		vector2 = vector2.div(vector2.norm());
+		vector3 = vector3.div(vector3.norm());
+		var vector = vector1.add(vector2).sub(vector3);
+		return this._getNearestNeighbors(vector, k);
 	}
 
 	// _computeDistances computes the partial dot products and l2 distances of an embedding
