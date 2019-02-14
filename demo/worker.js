@@ -21,6 +21,12 @@ if ('function' === typeof importScripts) {
 			result.data = { neighbors: neighbors };
 			self.postMessage(result);
 			break;
+			case 'word_analogy':
+			var {word1, word2, word3} = event.data;
+			var neighbors = wordEmbeddings.wordAnalogy(word1, word2, word3);
+			result.data = { neighbors: neighbors };
+			self.postMessage(result);
+			break;
 		}
 	}); 
 }
