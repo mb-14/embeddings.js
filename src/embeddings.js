@@ -8,7 +8,6 @@ class WordEmbeddings {
 		this.vocabulary = vocabulary;
 		this.centroids = centroids;
 		this.codes = codes;
-		console.log(this.codes.shape);
 	}
 
 	// _getVector returns the vector representation of a word as a tensor
@@ -47,23 +46,31 @@ class WordEmbeddings {
 		var vector = this._getVector(word);
 		var abs = vector.norm(2).asScalar();
 		// Precompute distances
+		console.time("precompute_distances");
 		var lookupTable = this._computeDistances(vector);
+		console.timeEnd("precompute_distances");
+
+		// Calculate distance for each word vector
+		console.time("calulate");
 		var subdims = this.centroids.shape[0];
-		for(var i = 0; i < this.vocabulary.length; i++) {
-			var vector1 = this._getSearchVector(i);
-			var abs1 = tf.scalar(0);
-			var indices = tf.range(0, subdims, 1, 'int32');
-			var search = tf.stack([indices, vector1], -1);
-			var dotProduct = tf.gatherND(lookupTable[0], search).sum();
-			var abs1 = tf.gatherND(lookupTable[1], search).sum()
-			var distance = dotProduct.div(abs.mul(abs1.sqrt())).as1D();
-			neighbors = neighbors.concat(distance);
-		}
-		var {values, indices} = tf.topk(neighbors, k);
+		const searchIndices = tf.range(0, subdims, 1, 'int32').tile([this.vocabulary.length]);
+		const searchVectors = this.codes.flatten();
+		var search = tf.stack([searchIndices, searchVectors], -1);
+		var dotProducts = tf.gatherND(lookupTable[0], search).reshape([this.vocabulary.length, -1]);
+		var abs1 = tf.gatherND(lookupTable[1], search).reshape([this.vocabulary.length, -1]);
+		dotProducts = dotProducts.sum([1]);
+		abs1 = abs1.sum([1]);
+		neighbors = dotProducts.div(abs.mul(abs1.sqrt()));
+		console.timeEnd("calulate");
+		
+		// Get top K distances
+		console.time("topk");
+		var {values, indices} = tf.topk(neighbors, k+1);
+		console.timeEnd("topk");
 		values = values.dataSync();
 		indices = indices.dataSync();
 		var nearestNeighbors = [];
-		for (var i = 0; i < indices.length; i++) {
+		for (var i = 1; i < indices.length; i++) {
 			nearestNeighbors.push({
 				word: this.vocabulary[indices[i]],
 				distance: values[i]
