@@ -1,5 +1,5 @@
 {
 	"vocabulary": <%= vocabulary %>,
-	"codewords": "<%= codewords %>",
-	"embeddings": "<%= embeddings %>"
+	"centroids": "<%= centroids %>",
+	"codes": "<%= codes %>"
 }

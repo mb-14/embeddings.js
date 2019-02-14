@@ -71,9 +71,9 @@ if __name__ == "__main__":
     print("Size reduction: {:f}%".format((size - new_size) * 100 / size))
 
     print("Compress embeddings using product quantization...")
-    embeddings, embeddings_pq, codewords = product_quantize(embeddings)
+    embeddings, codes, codebook = product_quantize(embeddings)
 
-    new_size = embeddings_pq.nbytes + codewords.nbytes
+    new_size = codes.nbytes + codebook.nbytes
     print("Size reduction: {:f}%".format((size-new_size)*100/size))
 
     words = [model.index2word[idx] for idx in range(len(embeddings))]
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         print("Saving {:s}".format(vocab_file_path))
         f.write(json.dumps(words))
 
-    save_matrix('codewords', codewords)
-    save_matrix('embeddings', embeddings_pq)
+    save_matrix('codebook', codebook)
+    save_matrix('codes', codes)
 
 
