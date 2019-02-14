@@ -1,5 +1,4 @@
 import * as utils from './utils';
-import * as np from 'numjs';
 import * as tf from '@tensorflow/tfjs';
 
 class WordEmbeddings {

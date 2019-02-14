@@ -51,7 +51,7 @@ function buildModel() {
 function bundle() {
   return gulp.src('src/embeddings.js')
     .pipe(webpack({
-      mode: 'development',
+      mode: 'production',
       entry: {
         embeddings: './src/embeddings.js',
       },

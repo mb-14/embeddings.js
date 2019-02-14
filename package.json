@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^0.14.1",
-    "lz-string": "^1.4.4",
-    "numjs": "^0.16.0"
+    "lz-string": "^1.4.4"
   }
 }

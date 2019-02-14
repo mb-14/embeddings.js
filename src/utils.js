@@ -1,5 +1,4 @@
 import * as lzstring  from 'lz-string';
-import * as np from 'numjs';
 import * as tf from '@tensorflow/tfjs';
 
 export const unpackVectors = function(data, type) {
