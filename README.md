@@ -46,8 +46,8 @@ Size reduction: 93.000000%
 Calculating accuracy...
 Accuracy: 81.957310%
 Saving model/vocab.json
-Saving model/codewords.json
-Saving model/embeddings.json
+Saving model/codebook.json
+Saving model/centroids.json
 ```
 
 ### Building JS library

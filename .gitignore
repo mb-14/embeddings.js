@@ -1,6 +1,6 @@
 venv/
 data/
-model/
+model/*
 node_modules/
 dist/
 .idea/
