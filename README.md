@@ -10,8 +10,6 @@ The resulting embeddings are significantly smaller compared to the original embe
 ## Demo
 You can check out the demo of the js library on this page: https://mb-14.github.io/embeddings.js/demo
 
-## Instructions
-
 ### Downloading pre-trained word vectors
 Run `fetch_vectors.sh` to download pre-trained vectors from fastText trained on the common crawl dataset. The file contains 50k word vectors, each of 300 dimensions.
 ```console
@@ -46,7 +44,7 @@ Size reduction: 93.000000%
 Calculating accuracy...
 Accuracy: 81.957310%
 Saving model/vocab.json
-Saving model/codebook.json
+Saving model/codes.json
 Saving model/centroids.json
 ```
 
