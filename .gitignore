@@ -1,7 +1,7 @@
 venv/
 data/
 model/*
-.gitkeep
+!.gitkeep
 node_modules/
 dist/
 .idea/
