@@ -89,6 +89,7 @@ if __name__ == "__main__":
         print("Saving {:s}".format(vocab_file_path))
         f.write(json.dumps(words))
 
+    model.save_word2vec_format('model/pq-150d-50k.vec')
     save_matrix('codes', codes)
     save_matrix('centroids', centroids)
 
