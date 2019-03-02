@@ -9,9 +9,39 @@ The resulting embeddings are significantly smaller compared to the original embe
 
 ## Demo
 You can check out the demo of the js library on this page: https://mb-14.github.io/embeddings.js/demo
+
+## Models
+
+- [models/compressor](): Module to compress pretrained word embeddings using PCA and product quantization
+- [models/sentiment_analysis]() LSTM model for sentiment classifcation trained on the sentiment140 dataset 
+
 ## Instructions
 
-### 
-### Building JS library
-Run `gulp build` to generate the js library and the final model JSON file in the `dist` directory
+### Run on local
 
+This project uses [yarn](https://yarnpkg.com) for dependencies 
+Install dependencies and run demo
+```bash
+yarn
+yarn run demo
+```
+You can then check all the demos at [http://localhost:8080]()
+
+### Build library
+Build the production version of `embeddings.js` in the `dist` folder
+
+```bash
+yarn build
+```
+
+### Generate word embeddings
+Bundle the vector and vocabulary files generated using the [compressor](/models/compressor) into a single
+JSON file.
+Make sure the following files are present in the `--input` directory:
+- centroids.json
+- codes.json
+- vocab.json
+
+```bash
+yarn build-embeddings --input models/compressor/generated --output output_dir/word-embeddings.json
+```
