@@ -12,8 +12,8 @@ You can check out the demo of the js library on this page: https://mb-14.github.
 
 ## Models
 
-- [models/compressor](): Module to compress pretrained word embeddings using PCA and product quantization
-- [models/sentiment_analysis]() LSTM model for sentiment classifcation trained on the sentiment140 dataset 
+- [compressor](models/compressor): Module to compress pretrained word embeddings using PCA and product quantization
+- [sentiment_analysis](models/sentiment_analysis) LSTM model for sentiment classifcation trained on the sentiment140 dataset 
 
 ## Instructions
 
