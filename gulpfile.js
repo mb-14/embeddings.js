@@ -1,70 +1,101 @@
-const gulp = require('gulp');
-const through = require('through2');
-const lzstring = require('lz-string');
-const Vinyl = require('vinyl');
-const path = require('path');
-const template = require('gulp-template');
-const fs = require('fs');
-const rename = require('gulp-rename');
-const webpack = require('webpack-stream');
-const del = require('del');
+const gulp = require("gulp");
+const through = require("through2");
+const lzstring = require("lz-string");
+const Vinyl = require("vinyl");
+const path = require("path");
+const template = require("gulp-template");
+const fs = require("fs");
+const rename = require("gulp-rename");
+const webpack = require("webpack-stream");
+const del = require("del");
+const connect = require("gulp-connect");
+const minimist = require('minimist');
 
-lzCompress = function() {
-  return through.obj(function(file, enc, cb){
-   var contents = file.contents.toString();
-   var base = path.join(file.path, '..');
-   var compressed = lzstring.compressToBase64(contents);
-   var compressedFile = file.clone();
-   compressedFile.contents = new Buffer(compressed);
-   compressedFile.basename += '.lz'
-   cb(null, compressedFile);
- });
+var knownOptions = {
+  string: ['input', 'output'],
+  default: {
+    input: 'models/compressor/generated',
+    output: 'pretrained/word-embeddings.json'
+  }
 };
 
+var options = minimist(process.argv.slice(2), knownOptions);
 
-function clean() {
-  return del(['dist', 'demo/assets', 'src/model.js', 'model/codes.json.lz', 'model/centroids.json.lz']);
-}
+lzCompress = function() {
+  return through.obj(function(file, enc, cb) {
+    var contents = file.contents.toString();
+    var base = path.join(file.path, "..");
+    var compressed = lzstring.compressToBase64(contents);
+    var compressedFile = file.clone();
+    compressedFile.contents = new Buffer(compressed);
+    compressedFile.basename += ".lz";
+    cb(null, compressedFile);
+  });
+};
 
 function compress() {
-  return gulp.src(['model/codes.json', 'model/centroids.json'])
-  .pipe(lzCompress())
-  .pipe(gulp.dest('model'));
+  return gulp
+    .src([`${options.input}/codes.json`, `${options.input}/centroids.json`])
+    .pipe(lzCompress())
+    .pipe(gulp.dest(`${options.input}/`));
 }
-
 
 function buildModel() {
-  var vocabulary = fs.readFileSync('model/vocab.json');
-  var codes = fs.readFileSync('model/codes.json.lz');
-  var centroids = fs.readFileSync('model/centroids.json.lz');
-  return gulp.src('src/model.tmpl.json')
-  .pipe(template({
-    vocabulary: vocabulary,
-    codes: codes.toString(),
-    centroids: centroids.toString() 
-  }))
-  .pipe(rename('model.json'))
-  .pipe(gulp.dest('dist'))
-  .pipe(gulp.dest('demo/assets'));
+  var vocabulary = fs.readFileSync(`${options.input}/vocab.json`);
+  var codes = fs.readFileSync(`${options.input}/codes.json.lz`);
+  var centroids = fs.readFileSync(`${options.input}/centroids.json.lz`);
+  return gulp
+    .src("src/model.tmpl.json")
+    .pipe(
+      template({
+        vocabulary: vocabulary,
+        codes: codes.toString(),
+        centroids: centroids.toString()
+      })
+    )
+    .pipe(rename(options.output.substring(options.output.lastIndexOf('/')+1)))
+    .pipe(gulp.dest(options.output.substring(0, options.output.lastIndexOf('/'))));
 }
 
-function bundle() {
-  return gulp.src('src/embeddings.js')
-    .pipe(webpack({
-      mode: 'production',
-      entry: {
-        embeddings: './src/embeddings.js',
-      },
-      output: {
-        filename: '[name].js',
-        library: 'embeddings'
-      }
-    }))
-    .pipe(gulp.dest('dist/'))
-    .pipe(gulp.dest('demo/assets/'));
+function getWebpackStream(mode) {
+  return webpack({
+    mode: mode,
+    entry: {
+      embeddings: "./src/embeddings.js"
+    },
+    externals: {
+      tfjs: "tf"
+    },
+    output: {
+      filename: "[name].js",
+      library: "embeddings"
+    }
+  });
 }
 
-gulp.task('compress', compress);
-gulp.task('build-model', buildModel);
-gulp.task('clean', clean);
-gulp.task('build', gulp.series(clean, compress, buildModel, bundle));
+function build() {
+  return gulp
+    .src("src/embeddings.js")
+    .pipe(getWebpackStream("production"))
+    .pipe(gulp.dest("dist/"));
+}
+
+function watchAndBuild() {
+  return gulp.watch("src").on("change", function() {
+    gulp
+      .src("src/embeddings.js")
+      .pipe(getWebpackStream("development"))
+      .pipe(gulp.dest("dist/"))
+      .pipe(connect.reload());
+  });
+}
+
+function runServer() {
+  return connect.server({
+    livereload: true
+  });
+}
+
+gulp.task("build-embeddings", gulp.series(compress, buildModel));
+gulp.task("build", build);
+gulp.task("watch", gulp.parallel(runServer, watchAndBuild));
