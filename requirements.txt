@@ -3,3 +3,7 @@ numpy
 gensim
 pqkmeans
 argparse
+keras
+tensorflow
+tensorflowjs
+pandas

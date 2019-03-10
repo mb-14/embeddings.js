@@ -1,5 +1,5 @@
 import * as lzstring  from 'lz-string';
-import * as tf from '@tensorflow/tfjs';
+import * as tf from 'tfjs';
 
 export const unpackVectors = function(data, type) {
 	var jsonData = JSON.parse(lzstring.decompressFromBase64(data));

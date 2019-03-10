@@ -10,44 +10,39 @@ The resulting embeddings are significantly smaller compared to the original embe
 ## Demo
 You can check out the demo of the js library on this page: https://mb-14.github.io/embeddings.js/demo
 
-### Downloading pre-trained word vectors
-Run `fetch_vectors.sh` to download pre-trained vectors from fastText trained on the common crawl dataset. The file contains 50k word vectors, each of 300 dimensions.
-```console
-foo@bar:~$ ./fetch_vectors.sh
-Downloading fastText word vectors for 50k most common words...
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 35.5M  100 35.5M    0     0  1272k      0  0:00:28  0:00:28 --:--:-- 1278k
-Archive:  data/crawl-300d-50K.vec.zip
-  inflating: data/crawl-300d-50K.vec
+## Models
 
+- [compressor](models/compressor) - Module to compress pretrained word embeddings using PCA and product quantization
+- [sentiment_classification](models/sentiment_classification) - CNN model for sentiment classifcation trained on the sentiment140 dataset 
+
+## Instructions
+
+This project uses [yarn](https://yarnpkg.com) for dependencies 
+
+### Run on local
+
+Install dependencies and run demo
+```bash
+yarn
+yarn run demo
 ```
-### Loading vectors into gensim
-Run `main.py` to load the words vectors into gensim and calculate the accuracy using the word analogies test.
-```console
-foo@bar:~$ python main.py -i data/crawl-300d-50K.vec
-Loading vectors in gensim...
-Calculating accuracy...
-Accuracy: 87.078803%
-``` 
+You can then check all the demos at [http://localhost:8080]()
 
-### Compressing embeddings
-Add the `-c` parameter to compress the embeddings and re-calculate the accuracy. The compressed embeddings, codebook of centroids and vocabulary are saved in the model directory as JSON files.
+### Build library
+Build the production version of `embeddings.js` in the `dist` folder
 
-```console
-foo@bar:~$ python main.py -c -i data/crawl-300d-50K.vec
-Loading vectors in gensim...
-Reduce dimensions using PCA...
-Size reduction: 50.000000%
-Compress embeddings using product quantization...
-Size reduction: 93.000000%
-Calculating accuracy...
-Accuracy: 81.957310%
-Saving model/vocab.json
-Saving model/codes.json
-Saving model/centroids.json
+```bash
+yarn build
 ```
 
-### Building JS library
-Run `gulp build` to generate the js library and the final model JSON file in the `dist` directory
+### Generate word embeddings
+Bundle the vector and vocabulary files generated using the [compressor](/models/compressor) into a single
+JSON file.
+Make sure the following files are present in the `--input` directory:
+- centroids.json
+- codes.json
+- vocab.json
 
+```bash
+yarn build-embeddings --input models/compressor/generated --output output_dir/word-embeddings.json
+```

@@ -4,12 +4,20 @@
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^4.0.0",
+    "gulp-connect": "^5.7.0",
     "gulp-rename": "^1.4.0",
     "gulp-template": "^5.0.0",
+    "gulp-watch": "^5.0.1",
+    "minimist": "^1.2.0",
     "webpack-stream": "^5.1.1"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^0.14.1",
     "lz-string": "^1.4.4"
-  }
+  },
+  "scripts": {
+    "build-embeddings": "gulp build-embeddings",
+    "demo": "gulp watch",
+    "build": "gulp build"
+  },
+  "license": "MIT"
 }

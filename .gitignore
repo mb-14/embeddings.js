@@ -1,6 +1,6 @@
 venv/
 data/
-model/*
+generated/
 !.gitkeep
 node_modules/
 dist/
