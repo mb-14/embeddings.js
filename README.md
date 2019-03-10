@@ -12,14 +12,15 @@ You can check out the demo of the js library on this page: https://mb-14.github.
 
 ## Models
 
-- [compressor](models/compressor): Module to compress pretrained word embeddings using PCA and product quantization
-- [sentiment_analysis](models/sentiment_analysis) LSTM model for sentiment classifcation trained on the sentiment140 dataset 
+- [compressor](models/compressor) - Module to compress pretrained word embeddings using PCA and product quantization
+- [sentiment_classification](models/sentiment_classification) - CNN model for sentiment classifcation trained on the sentiment140 dataset 
 
 ## Instructions
 
+This project uses [yarn](https://yarnpkg.com) for dependencies 
+
 ### Run on local
 
-This project uses [yarn](https://yarnpkg.com) for dependencies 
 Install dependencies and run demo
 ```bash
 yarn

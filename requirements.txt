@@ -6,3 +6,4 @@ argparse
 keras
 tensorflow
 tensorflowjs
+pandas

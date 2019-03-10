@@ -56,6 +56,9 @@ def human_format(num):
 
 
 def save_model(path, embedding_size, word_list, codes, centroids):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
     model_name = "embeddings-{}d-{}.vec".format(embedding_size, human_format(len(word_list)))
     model.save_word2vec_format(os.path.join(path, model_name))
 

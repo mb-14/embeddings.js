@@ -5,6 +5,7 @@ We will explore two techniques to compress our word embeddings:
 - Product quantization
 
 ## Demo
+You can find the demo on this [page](https://mb-14.github.io/embeddings.js/models/compressor/demo)
 
 ## Instructions
 ### Downloading pre-trained word vectors
