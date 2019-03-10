@@ -17,7 +17,7 @@ You can find the demo on this [page](https://mb-14.github.io/embeddings.js/model
 ### Downloading training data
 
 We will be using the [sentiment140 dataset](http://help.sentiment140.com/home) for training our classification model.
-Download the dataset from this [link](http://cs.stanford.edu/people/alecmgo/trainingandtestdata.zip) and the contents in the `data` folder
+Download the dataset from this [link](http://cs.stanford.edu/people/alecmgo/trainingandtestdata.zip) and extract the contents in the `data` folder
 
 ### Training
 Run `sentiment_lstm.py` to train the model and convert it to the tensorflowjs format.
