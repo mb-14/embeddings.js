@@ -1,7 +1,6 @@
-var wordEmbeddings;
-var sentimentCNN;
-
 function init() {
+	var worker = new PromiseWorker(new Worker('worker.js'));
+
 	var modelStatus = document.getElementById("model-status");
 
 	var sentimentClassification = {
@@ -26,7 +25,7 @@ function init() {
 
         numWords = inputText.length
 
-		classifySentiment(inputText).then(result => {
+		worker.send("classifySentiment", inputText).then(result => {
 		sentimentClassification.results.innerHTML =
 			"Inference result (0 - negative; 1 - positive): " +
 			result.score.toFixed(6) +
@@ -37,26 +36,12 @@ function init() {
 	});
 
 	modelStatus.innerHTML = "Loading model...";
-	loadModels().then(results => {
+	worker.send("loadModels").then(() => {
 		modelStatus.innerHTML = "";
-		wordEmbeddings = results.wordEmbeddings;
-		sentimentLSTM = results.sentimentLSTM;
 	});
+
 }
 
-async function classifySentiment(inputText) {
-	const inputSequence = wordEmbeddings._transformSequence(inputText, 100);
-	const beginMs = performance.now();
-	const predictOut = sentimentLSTM.predict(inputSequence.expandDims(0));
-	const score = predictOut.dataSync()[0];
-	const elapsed = performance.now() - beginMs;
-	return {score, elapsed}
-}
 
-async function loadModels() {
-	const sentimentLSTM = await tf.loadModel("../../../pretrained/sentiment_lstm/model.json");
-    const wordEmbeddings = await embeddings.loadModel("../../../pretrained/word-embeddings.json");
-	return { sentimentLSTM, wordEmbeddings };
-}
 
 window.onload = init;
