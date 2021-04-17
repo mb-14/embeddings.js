@@ -2,6 +2,9 @@
 
 Word embeddings for the the web
 
+Blog post: [https://mb-14.github.io/tech/2019/02/19/word-embeddings-js.html](https://mb-14.github.io/tech/2019/02/19/word-embeddings-js.html)
+
+
 Word embeddings often require a large number of parameters which results in a large memory and storage footprint.
 This makes deploying pre-trained word embeddings like [fastText](https://fasttext.cc/) and [GloVe](https://nlp.stanford.edu/projects/glove/) in mobile and browser environments very difficult. In this project,
 we will compress pre-trained word vectors using simple post-processing techniques like **PCA dimensionality reduction** and **production quantization**.
