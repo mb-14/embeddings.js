@@ -9,20 +9,20 @@ const rename = require("gulp-rename");
 const webpack = require("webpack-stream");
 const del = require("del");
 const connect = require("gulp-connect");
-const minimist = require('minimist');
+const minimist = require("minimist");
 
 var knownOptions = {
-  string: ['input', 'output'],
+  string: ["input", "output"],
   default: {
-    input: 'models/compressor/generated',
-    output: 'pretrained/word-embeddings.json'
-  }
+    input: "models/compressor/generated",
+    output: "assets",
+  },
 };
 
 var options = minimist(process.argv.slice(2), knownOptions);
 
-lzCompress = function() {
-  return through.obj(function(file, enc, cb) {
+lzCompress = function () {
+  return through.obj(function (file, enc, cb) {
     var contents = file.contents.toString();
     var base = path.join(file.path, "..");
     var compressed = lzstring.compressToBase64(contents);
@@ -50,26 +50,23 @@ function buildModel() {
       template({
         vocabulary: vocabulary,
         codes: codes.toString(),
-        centroids: centroids.toString()
+        centroids: centroids.toString(),
       })
     )
-    .pipe(rename(options.output.substring(options.output.lastIndexOf('/')+1)))
-    .pipe(gulp.dest(options.output.substring(0, options.output.lastIndexOf('/'))));
+    .pipe(rename("word-embeddings.json"))
+    .pipe(gulp.dest(options.output));
 }
 
 function getWebpackStream(mode) {
   return webpack({
     mode: mode,
     entry: {
-      embeddings: "./src/embeddings.js"
-    },
-    externals: {
-      tfjs: "tf"
+      embeddings: "./src/embeddings.js",
     },
     output: {
       filename: "[name].js",
-      library: "embeddings"
-    }
+      library: "embeddings",
+    },
   });
 }
 
@@ -77,25 +74,61 @@ function build() {
   return gulp
     .src("src/embeddings.js")
     .pipe(getWebpackStream("production"))
-    .pipe(gulp.dest("dist/"));
+    .pipe(gulp.dest("assets/"));
+}
+
+function copyWasmBinaries() {
+  return gulp
+    .src("node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm")
+    .pipe(gulp.dest("assets/"));
+}
+
+function copyLstmModel() {
+  return gulp
+    .src("models/sentiment_lstm/generated/*")
+    .pipe(gulp.dest("assets/sentiment_lstm/"));
 }
 
 function watchAndBuild() {
-  return gulp.watch("src").on("change", function() {
+  return gulp.watch("src").on("change", function () {
     gulp
       .src("src/embeddings.js")
       .pipe(getWebpackStream("development"))
-      .pipe(gulp.dest("dist/"))
+      .pipe(gulp.dest("assets/"))
       .pipe(connect.reload());
   });
 }
 
 function runServer() {
   return connect.server({
-    livereload: true
+    livereload: true,
+    middleware: function (connect, opt) {
+      return [
+        function (req, res, next) {
+          if (req.url.endsWith(".wasm")) {
+            console.log(req.url);
+            res.setHeader("Content-Type", "application/wasm");
+          }
+          next();
+        },
+      ];
+    },
   });
 }
 
-gulp.task("build-embeddings", gulp.series(compress, buildModel));
-gulp.task("build", build);
+gulp.task(
+  "build",
+  gulp.parallel(
+    gulp.series(compress, buildModel),
+    copyWasmBinaries,
+    copyLstmModel,
+    build
+  )
+);
+
+gulp.task(
+  "build-embeddings",
+  gulp.series(compress, buildModel, copyWasmBinaries, build)
+);
+
 gulp.task("watch", gulp.parallel(runServer, watchAndBuild));

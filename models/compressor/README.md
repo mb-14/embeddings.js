@@ -21,7 +21,7 @@ Archive:  data/crawl-300d-50K.vec.zip
 
 ```
 ### Loading vectors into gensim
-Run `main.py` to load the words vectors into gensim and calculate the accuracy using the word analogies test.
+Run `compressor.py` to load the words vectors into gensim and calculate the accuracy using the word analogies test.
 ```console
 foo@bar:~$ python main.py -i data/crawl-300d-50K.vec
 Loading vectors in gensim...
@@ -33,7 +33,7 @@ Accuracy: 87.078803%
 Add the `-c` parameter to compress the embeddings and re-calculate the accuracy. The compressed embeddings, codebook of centroids and vocabulary are saved in the model directory as JSON files.
 
 ```console
-foo@bar:~$ python main.py -c -i data/crawl-300d-50K.vec
+foo@bar:~$ python compressor.py -c -i data/crawl-300d-50K.vec
 Loading vectors in gensim...
 Reduce dimensions using PCA...
 Size reduction: 50.000000%
@@ -50,5 +50,5 @@ Saving generated/centroids.json
 Compress the files using lz compression, bundle everything into a single JSON file
 ```console
 # Run this from the project root
-yarn build-embeddings --input models/compressor/generated --output pretrained/word-embeddings.json
+yarn build-embeddings
 ```

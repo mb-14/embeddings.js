@@ -104,9 +104,9 @@ if __name__ == "__main__":
     new_size = codes.nbytes + centroids.nbytes
     print("Size reduction: {:f}%".format((size-new_size)*100/size))
 
-    words = [model.index2word[idx] for idx in range(len(embeddings))]
+    words = [model.index_to_key[idx] for idx in range(len(embeddings))]
     model = KeyedVectors(vector_size=embeddings.shape[1])
-    model.add(words, embeddings, replace=True)
+    model.add_vectors(words, embeddings, replace=True)
     compute_accuracy(model)
 
     save_model('generated', embeddings.shape[1], words, codes, centroids)

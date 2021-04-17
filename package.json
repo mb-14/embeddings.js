@@ -12,12 +12,14 @@
     "webpack-stream": "^5.1.1"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^3.4.0",
+    "@tensorflow/tfjs-backend-wasm": "^3.4.0",
     "lz-string": "^1.4.4"
   },
   "scripts": {
-    "build-embeddings": "gulp build-embeddings",
+    "build": "gulp build",
     "demo": "gulp watch",
-    "build": "gulp build"
+    "build-embeddings": "gulp build-embeddings"
   },
   "license": "MIT"
 }

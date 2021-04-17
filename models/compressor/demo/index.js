@@ -15,11 +15,6 @@ function init() {
 		word3: document.getElementById("word3-input")
 	};
 
-	var sentimentClassification = {
-		results: document.getElementById("sentiment-classification-results"),
-		input: document.getElementById("sentiment-input")
-	};
-
 	nearestNeighbors.button.addEventListener("click", () => {
 		var word = nearestNeighbors.word.value;
 		nearestNeighbors.results.innerHTML = "Loading...";
@@ -46,31 +41,6 @@ function init() {
 		});
 	});
 
-	sentimentClassification.input.addEventListener("input", () => {
-		// Convert to lower case and remove all punctuations.
-		const text = sentimentClassification.input.value;
-		const inputText = text
-			.trim()
-			.toLowerCase()
-			.replace(/(\.|\,|\!)/g, "")
-			.split(" ");
-		console.log(inputText);
-		const inputSequence = wordEmbeddings._transformSequence(inputText, 200);
-		inputSequence.print();
-		const beginMs = performance.now();
-		const predictOut = sentimentCNN.predict(inputSequence.expandDims(0));
-		const score = predictOut.dataSync()[0];
-		predictOut.dispose();
-		inputSequence.dispose();
-		const elapsed = performance.now() - beginMs;
-		sentimentClassification.results.innerHTML =
-			"Inference result (0 - negative; 1 - positive): " +
-			score.toFixed(6) +
-			" (elapsed: " +
-			elapsed.toFixed(2) +
-			" ms)";
-	});
-
 	nearestNeighbors.button.disabled = true;
 	wordAnalogy.button.disabled = true;
 	modelStatus.innerHTML = "Loading model...";
@@ -86,8 +56,7 @@ function init() {
 
 async function loadModels() {
     let sentimentCNN;
-	// const sentimentCNN = await tf.loadModel("assets/sentiment_cnn/model.json");
-    const wordEmbeddings = await embeddings.loadModel("../../../pretrained/word-embeddings.json");
+    const wordEmbeddings = await embeddings.loadModel("../../../assets/word-embeddings.json");
 	return { sentimentCNN, wordEmbeddings };
 }
 

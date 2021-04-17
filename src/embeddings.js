@@ -1,9 +1,12 @@
 import * as utils from './utils';
-import * as tf from 'tfjs';
+import * as tf from '@tensorflow/tfjs';
+// Adds the WASM backend to the global backend registry.
+import '@tensorflow/tfjs-backend-wasm';
 
 class WordEmbeddings {
 
 	constructor(codes, centroids, vocabulary) {
+		tf.setBackend('wasm');
 		this.vocabulary = vocabulary;
 		this.centroids = centroids;
 		this.codes = codes;

@@ -13,7 +13,7 @@ You can check out the demo of the js library on this page: https://mb-14.github.
 ## Models
 
 - [compressor](models/compressor) - Module to compress pretrained word embeddings using PCA and product quantization
-- [sentiment_classification](models/sentiment_classification) - CNN model for sentiment classifcation trained on the sentiment140 dataset 
+- [sentiment_classification](models/sentiment_lstm) - LSTM model for sentiment classifcation trained on the sentiment140 dataset 
 
 ## Instructions
 
@@ -21,28 +21,15 @@ This project uses [yarn](https://yarnpkg.com) for dependencies
 
 ### Run on local
 
-Install dependencies and run demo
-```bash
-yarn
+```
+yarn 
 yarn run demo
 ```
 You can then check all the demos at [http://localhost:8080]()
 
-### Build library
-Build the production version of `embeddings.js` in the `dist` folder
+
+### Re-build models
 
 ```bash
 yarn build
-```
-
-### Generate word embeddings
-Bundle the vector and vocabulary files generated using the [compressor](/models/compressor) into a single
-JSON file.
-Make sure the following files are present in the `--input` directory:
-- centroids.json
-- codes.json
-- vocab.json
-
-```bash
-yarn build-embeddings --input models/compressor/generated --output output_dir/word-embeddings.json
 ```
