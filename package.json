@@ -8,7 +8,7 @@
     "gulp-rename": "^1.4.0",
     "gulp-template": "^5.0.0",
     "gulp-watch": "^5.0.1",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "webpack-stream": "^5.1.1"
   },
   "dependencies": {
