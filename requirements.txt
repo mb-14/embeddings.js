@@ -4,6 +4,6 @@ gensim
 pqkmeans
 argparse
 keras
-tensorflow==2.2.0
+tensorflow==2.7.2
 tensorflowjs==3.4.0
 pandas
